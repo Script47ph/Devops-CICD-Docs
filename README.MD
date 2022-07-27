@@ -18,17 +18,26 @@
    ```bash
    sudo gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-runner
     ```
+5. Set Permission and Verify the GitLab Runner service is running.
+    ```bash
+    sudo usermod -aG docker gitlab-runner
+    sudo -u gitlab-runner -H docker info
+    sudo gitlab-runner start
+    sudo gitlab-runner status
+    ```
 
 ## Create a Project on Gitlab (Simple Go Apps)
 1. Create a new project on GitLab
 
-    From web browser create a new project on GitLab with specification :
+    From web browser create a new project on GitLab with specification:
+
     Name project: Golang Apps
-    Visibility Level : Public
+
+    Visibility Level: Public
 2. Clone a project
     ```bash
-    git clone http://gitlab-local.id/[USERNAME_GITLAB]/golang-apps.git
-    cd apps
+    git clone https://gitlab.com/[USERNAME_GITLAB]/golang-apps.git
+    cd golang-apps
     ```
 3. Create main.go
     ```go
@@ -201,7 +210,7 @@
             - echo "testing apps. Please wait.."
             - sleep 5s
             - ./$BINARY_NAME
-            - sleep 1m
+            - sleep 30
 
     docker-build:
         only:
@@ -238,12 +247,163 @@
     --docker-image "golang:latest" \
     --docker-volumes /var/run/docker.sock:/var/run/docker.sock
     ```
-11. Set Permission and Verify the GitLab Runner.
+11. Verify the registered runner is alive.
     ```bash
-    sudo usermod -aG docker gitlab-runner
-    sudo -u gitlab-runner -H docker info
-    sudo gitlab-runner start
-    sudo gitlab-runner list
-    sudo gitlab-runner status
+    sudo gitlab-runner verify
+    ```
+
+## Create a Project on Gitlab (Simple Java Apps)
+1. Create a new project on GitLab
+
+    From web browser create a new project on GitLab with specification:
+
+    Name project: Java Apps
+
+    Visibility Level: Public
+2. Clone a project
+    ```bash
+    git clone https://gitlab.com/[USERNAME_GITLAB]/java-apps.git
+    cd java-apps
+    ```
+3. Create java simple project
+    ```bash
+    mvn archetype:generate -DgroupId=com.simpleapp.app -DartifactId=simple-java-app -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 -DinteractiveMode=false
+    ```
+4. Move all file to main repository
+    ```bash
+    mv simple-java-app/* .
+    ```
+5. Change output println style
+    ```bash
+    # delete all line with :%d and hit Enter
+    vim src/main/java/com/simpleapp/app/App.java
+    ```
+    copy and paste this style
+    ```java
+    package com.mycompany.app;
+
+    public class App
+    {
+        public static void main( String[] args )
+        {
+            System.out.println( "Hello!" );
+            System.out.println( "Today we learn about GitLab Best Practices and CI/CD magic :)" );
+            System.out.println( "" );
+            System.out.println("\u001B[33m           +                        +");
+            System.out.println("          :s:                      :s:");
+            System.out.println("         .oso'                    'oso.");
+            System.out.println("         +sss+                    +sss+");
+            System.out.println("        :sssss-                  -sssss:");
+            System.out.println("       'ossssso.                .ossssso'");
+            System.out.println("       +sssssss+                +sssssss+");
+            System.out.println("      -ooooooooo-++++++++++++++-ooooooooo-\u001B[0m");
+            System.out.println("\u001B[37m    ':/" + "\u001B[31m+++++++++" + "\u001B[33mosssssssssssso" + "\u001B[31m+++++++++" + "\u001B[37m/:'\u001B[0m\u001B[0m");
+            System.out.println("\u001B[37m    -///" + "\u001B[31m+++++++++" + "\u001B[33mcssssssssssss" + "\u001B[31m+++++++++" + "\u001B[37m///-\u001B[0m");
+            System.out.println("\u001B[37m   .//////" + "\u001B[31m+++++++" + "\u001B[33mcosssssssssso" + "\u001B[31m+++++++" + "\u001B[37m//////.\u001B[0m");
+            System.out.println("\u001B[37m   :///////" + "\u001B[31m+++++++" + "\u001B[33mosssssssso" + "\u001B[31m+++++++" + "\u001B[37m///////:\u001B[0m");
+            System.out.println("\u001B[37m    .:///////" + "\u001B[31m++++++" + "\u001B[33mssssssss" + "\u001B[31m++++++" + "\u001B[37m///////:.'\u001B[0m");
+            System.out.println("\u001B[37m      '-://///" + "\u001B[31m+++++" + "\u001B[33mosssssso" + "\u001B[31m+++++" + "\u001B[37m/////:-'\u001B[0m");
+            System.out.println("\u001B[37m         '-:////" + "\u001B[31m++++" + "\u001B[33mosssso" + "\u001B[31m++++" + "\u001B[37m////:-'\u001B[0m");
+            System.out.println("\u001B[37m            .-:///" + "\u001B[31m++" + "\u001B[33mosssso" + "\u001B[31m++" + "\u001B[37m///:-.\u001B[0m");
+            System.out.println("\u001B[37m              '.://" + "\u001B[31m++" + "\u001B[33mcosso" + "\u001B[31m++" + "\u001B[37m//:.'\u001B[0m");
+            System.out.println("\u001B[37m                 '-:/" + "\u001B[31m+" + "\u001B[33mcoo" + "\u001B[31m+" + "\u001B[37m/:-'\u001B[0m");
+            System.out.println("\u001B[37m                    '-" + "\u001B[31m++" + "\u001B[31m-'\u001B[0m");
+            System.out.println("\n\n" + "\u001B[36m          Tanuki has been summoned...\u001B[0m" + "\n\n");
+            
+        }
+    }
+    ```
+    quit from vim with :wq and hit Enter
+6. Push to gitlab
+    ```bash
+    git add .
+    git commit -m "First Commit"
+    git branch -M main
+    git push -u origin main
+    ```
+7. Create Dockerfile on new branch "Ex: Develop"
+    ```
+    FROM maven:latest
+    WORKDIR /APP
+    ADD . .
+    RUN echo "#!/bin/bash \n ./target/simple-java-app-1.0-SNAPSHOT.jar \n sleep 24h" > start.sh
+    RUN chmod +x ./start.sh
+    CMD ["./start.sh"]
+    ```
+8. Create .gitlab-ci.yml
+    ```yml
+    stages:
+        - format
+        - build
+        - testing apps
+        - deploy
+
+    image: maven:latest
+
+    variables:
+        BINARY_NAME: simple-java-app-1.0-SNAPSHOT.jar
+        CONTAINER_IMAGE: script47/simple-java
+
+    format:
+        only:
+            - develop
+        stage: format
+        script:
+            - mvn clean
+
+    compile:
+        only:
+            - develop
+        stage: build
+        script:
+            - mvn package
+
+    run:
+        only:
+            - develop
+        stage: testing apps
+        script:
+            - echo "testing apps. Please wait.."
+            - sleep 5s
+            - ./target/$BINARY_NAME
+            - sleep 30
+
+    docker-build:
+        only:
+            - develop
+        image: docker:latest
+        stage: deploy
+        environment: staging
+        services:
+            - docker:dind
+        before_script:
+            - echo $DOCKER_TOKEN | docker login -u $DOCKER_USERNAME --password-stdin
+        script:
+            - docker build -t $CONTAINER_IMAGE:latest .
+            - docker push $CONTAINER_IMAGE:latest
+    ```
+9. Set Variabel CI/CD
+
+    Go to Settings > CI / CD > Variables > Expand then create 2 variables with specification like below.
+    - DOCKER_TOKEN = [Token-Dockerhub] (Login to docker hub and generate the access token at this link https://hub.docker.com/settings/security)
+    - DOCKER_USERNAME = [Username-Dockerhub]
+10. Register GitLab Runner Executor Docker
+
+        Go to Settings > CI / CD > Runners > Shared Runners. Click Disable shared Runners.
+        Go to Setting > CI / CD > Runners > Setup a specific Runner manually. Copy the registration token.
+
+    Change the REGISTRATION_TOKEN with Token Runner.
+
+    ```bash
+    sudo gitlab-runner register -n \
+    --url https://gitlab.com \
+    --registration-token [REGISTRATION_TOKEN] \
+    --executor docker \
+    --description "Docker Runner for Java apps" \
+    --docker-image "maven:latest" \
+    --docker-volumes /var/run/docker.sock:/var/run/docker.sock
+    ```
+11. Verify the registered runner is alive.
+    ```bash
     sudo gitlab-runner verify
     ```
