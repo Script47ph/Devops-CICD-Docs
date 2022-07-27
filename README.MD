@@ -294,7 +294,7 @@
     FROM maven:latest
     WORKDIR /APP
     ADD . .
-    RUN echo "#!/bin/bash \n ./target/simple-java-app-1.0-SNAPSHOT.jar \n sleep 24h" > start.sh
+    RUN echo "#!/bin/bash \n java -cp ./target/simple-java-app-1.0-SNAPSHOT.jar com.mycompany.app.App \n sleep 24h" > start.sh
     RUN chmod +x ./start.sh
     CMD ["./start.sh"]
     ```
