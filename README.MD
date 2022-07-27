@@ -273,63 +273,23 @@
     git clone https://gitlab.com/[USERNAME_GITLAB]/java-apps.git
     cd java-apps
     ```
-3. Create java simple project
+3. Download & extract simple-java-app
     ```bash
-    mvn archetype:generate -DgroupId=com.simpleapp.app -DartifactId=simple-java-app -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 -DinteractiveMode=false
+    wget https://github.com/Script47ph/Devops-CICD-Docs/raw/main/simple-java-app.tar.xz
+    tar -xJvf simple-java-app.tar.xz
     ```
-4. Move all file to main repository
+4. Remove unused archive
     ```bash
-    mv simple-java-app/* .
+    rm simple-java-app.tar.xz
     ```
-5. Change output println style
-    ```bash
-    # delete all line with :%d and hit Enter
-    vim src/main/java/com/simpleapp/app/App.java
-    ```
-    copy and paste this style
-    ```java
-    package com.mycompany.app;
-
-    public class App
-    {
-        public static void main( String[] args )
-        {
-            System.out.println( "Hello!" );
-            System.out.println( "Today we learn about GitLab Best Practices and CI/CD magic :)" );
-            System.out.println( "" );
-            System.out.println("\u001B[33m           +                        +");
-            System.out.println("          :s:                      :s:");
-            System.out.println("         .oso'                    'oso.");
-            System.out.println("         +sss+                    +sss+");
-            System.out.println("        :sssss-                  -sssss:");
-            System.out.println("       'ossssso.                .ossssso'");
-            System.out.println("       +sssssss+                +sssssss+");
-            System.out.println("      -ooooooooo-++++++++++++++-ooooooooo-\u001B[0m");
-            System.out.println("\u001B[37m    ':/" + "\u001B[31m+++++++++" + "\u001B[33mosssssssssssso" + "\u001B[31m+++++++++" + "\u001B[37m/:'\u001B[0m\u001B[0m");
-            System.out.println("\u001B[37m    -///" + "\u001B[31m+++++++++" + "\u001B[33mcssssssssssss" + "\u001B[31m+++++++++" + "\u001B[37m///-\u001B[0m");
-            System.out.println("\u001B[37m   .//////" + "\u001B[31m+++++++" + "\u001B[33mcosssssssssso" + "\u001B[31m+++++++" + "\u001B[37m//////.\u001B[0m");
-            System.out.println("\u001B[37m   :///////" + "\u001B[31m+++++++" + "\u001B[33mosssssssso" + "\u001B[31m+++++++" + "\u001B[37m///////:\u001B[0m");
-            System.out.println("\u001B[37m    .:///////" + "\u001B[31m++++++" + "\u001B[33mssssssss" + "\u001B[31m++++++" + "\u001B[37m///////:.'\u001B[0m");
-            System.out.println("\u001B[37m      '-://///" + "\u001B[31m+++++" + "\u001B[33mosssssso" + "\u001B[31m+++++" + "\u001B[37m/////:-'\u001B[0m");
-            System.out.println("\u001B[37m         '-:////" + "\u001B[31m++++" + "\u001B[33mosssso" + "\u001B[31m++++" + "\u001B[37m////:-'\u001B[0m");
-            System.out.println("\u001B[37m            .-:///" + "\u001B[31m++" + "\u001B[33mosssso" + "\u001B[31m++" + "\u001B[37m///:-.\u001B[0m");
-            System.out.println("\u001B[37m              '.://" + "\u001B[31m++" + "\u001B[33mcosso" + "\u001B[31m++" + "\u001B[37m//:.'\u001B[0m");
-            System.out.println("\u001B[37m                 '-:/" + "\u001B[31m+" + "\u001B[33mcoo" + "\u001B[31m+" + "\u001B[37m/:-'\u001B[0m");
-            System.out.println("\u001B[37m                    '-" + "\u001B[31m++" + "\u001B[31m-'\u001B[0m");
-            System.out.println("\n\n" + "\u001B[36m          Tanuki has been summoned...\u001B[0m" + "\n\n");
-            
-        }
-    }
-    ```
-    quit from vim with :wq and hit Enter
-6. Push to gitlab
+5. Push to gitlab
     ```bash
     git add .
     git commit -m "First Commit"
     git branch -M main
     git push -u origin main
     ```
-7. Create Dockerfile on new branch "Ex: Develop"
+6. Create Dockerfile on new branch "Ex: Develop"
     ```
     FROM maven:latest
     WORKDIR /APP
@@ -338,7 +298,7 @@
     RUN chmod +x ./start.sh
     CMD ["./start.sh"]
     ```
-8. Create .gitlab-ci.yml
+7. Create .gitlab-ci.yml
     ```yml
     stages:
         - format
@@ -390,12 +350,12 @@
             - docker build -t $CONTAINER_IMAGE:latest .
             - docker push $CONTAINER_IMAGE:latest
     ```
-9. Set Variabel CI/CD
+8. Set Variabel CI/CD
 
     Go to Settings > CI / CD > Variables > Expand then create 2 variables with specification like below.
     - DOCKER_TOKEN = [Token-Dockerhub] (Login to docker hub and generate the access token at this link https://hub.docker.com/settings/security)
     - DOCKER_USERNAME = [Username-Dockerhub]
-10. Register GitLab Runner Executor Docker
+9. Register GitLab Runner Executor Docker
 
         Go to Settings > CI / CD > Runners > Shared Runners. Click Disable shared Runners.
         Go to Setting > CI / CD > Runners > Setup a specific Runner manually. Copy the registration token.
@@ -411,7 +371,7 @@
     --docker-image "maven:latest" \
     --docker-volumes /var/run/docker.sock:/var/run/docker.sock
     ```
-11. Verify the registered runner is alive.
+10. Verify the registered runner is alive.
     ```bash
     sudo gitlab-runner verify
     ```
