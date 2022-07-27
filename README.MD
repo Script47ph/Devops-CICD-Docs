@@ -221,7 +221,7 @@
 
     ```bash
     sudo gitlab-runner register -n \
-    --url http://gitlab-local.id \
+    --url https://gitlab.com \
     --registration-token [REGISTRATION_TOKEN] \
     --executor docker \
     --description "Docker Runner for Go apps" \
