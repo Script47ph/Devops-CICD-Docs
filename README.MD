@@ -1,5 +1,13 @@
 # Devops CI/CD Documentation with Gitlab CI
 
+## Table of Contents
+- [Devops CI/CD Documentation with Gitlab CI](#devops-cicd-documentation-with-gitlab-ci)
+  - [Table of Contents](#table-of-contents)
+  - [Install GitLab Runner](#install-gitlab-runner)
+  - [Create a Project on Gitlab (Simple Go Apps)](#create-a-project-on-gitlab-simple-go-apps)
+  - [Create a Project on Gitlab (Simple Java Apps)](#create-a-project-on-gitlab-simple-java-apps)
+  - [Reference](#reference)
+
 ## Install GitLab Runner
 1. Simply download one of the binaries for your system:
 
@@ -407,3 +415,8 @@
     ```bash
     sudo gitlab-runner verify
     ```
+
+## Reference
+- [First virtual GitLab meetup - intro to CI](https://gitlab.com/gitlab-de/workshops/meetup-2020-cw13)
+- [1. Swiss Meetup 2021 January](https://gitlab.com/gitlab-de/workshops/swiss-meetup-2021-jan)
+- [Gitlab CI/CD](https://docs.gitlab.com/ee/ci/)
