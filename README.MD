@@ -150,15 +150,15 @@
         - format
         - test
         - build
-        - testing-apps
+        - testing apps
         - deploy
 
     image: golang:latest
 
     variables:
-        REPO_NAME: gitlab.com/[USERNAME_GITLAB]/golang-apps
+        REPO_NAME: gitlab.com/script47ind/golang-apps
         BINARY_NAME: tanuki
-        CONTAINER_IMAGE: [USERNAME_DOCKERHUB]/tanuki
+        CONTAINER_IMAGE: script47/tanuki
 
     before_script:
         - mkdir -p $GOPATH/src/$(dirname $REPO_NAME)
@@ -167,35 +167,45 @@
         - go mod download
 
     format:
+        only:
+            - develop
         stage: format
         script:
             - go fmt $(go list ./... | grep -v /vendor/)
             - go vet $(go list ./... | grep -v /vendor/)
-        
+
     unit-test:
+        only:
+            - develop
         stage: test
         coverage: '/\d+.\d+% of statements/'
         script:
             - go test -race $(go list ./... | grep -v /vendor/)
             - go test -cover $(go list ./... | grep -v /vendor/)
-        
+
     compile:
+        only:
+            - develop
         stage: build
         script:
             - go build -race -ldflags "-extldflags '-static'" -o $CI_PROJECT_DIR/$BINARY_NAME
         artifacts:
             paths:
             - $BINARY_NAME
-        
+
     run:
-        stage: testing-apps
+        only:
+            - develop
+        stage: testing apps
         script:
             - echo "testing apps. Please wait.."
             - sleep 5s
             - ./$BINARY_NAME
             - sleep 1m
-        
+
     docker-build:
+        only:
+            - develop
         image: docker:latest
         stage: deploy
         environment: staging
