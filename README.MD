@@ -301,30 +301,28 @@
 7. Create .gitlab-ci.yml
     ```yml
     stages:
-        - format
-        - build
-        - testing apps
-        - deploy
+      - build
+      - testing apps
+      - deploy
 
     image: maven:latest
 
     variables:
         BINARY_NAME: simple-java-app-1.0-SNAPSHOT.jar
         CONTAINER_IMAGE: script47/simple-java
-
-    format:
-        only:
-            - develop
-        stage: format
-        script:
-            - mvn clean
+        GROUP_ID: com.mycompany.app.App
 
     compile:
         only:
             - develop
         stage: build
+        before_script:
+            - mvn clean
         script:
             - mvn package
+        artifacts:
+            paths:
+                - target/$BINARY_NAME
 
     run:
         only:
@@ -333,8 +331,7 @@
         script:
             - echo "testing apps. Please wait.."
             - sleep 5s
-            - ./target/$BINARY_NAME
-            - sleep 30
+            - java -cp target/$BINARY_NAME $GROUP_ID
 
     docker-build:
         only:
@@ -349,6 +346,7 @@
         script:
             - docker build -t $CONTAINER_IMAGE:latest .
             - docker push $CONTAINER_IMAGE:latest
+
     ```
 8. Set Variabel CI/CD
 
