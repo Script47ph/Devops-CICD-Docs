@@ -120,7 +120,7 @@
     ```
 5. Create go.mod
     ```go
-    module gitlab-local.id/[USERNAME_GITLAB]/golang-apps
+    module gitlab.com/[USERNAME_GITLAB]/golang-apps
 
     go 1.14
 
@@ -130,7 +130,8 @@
     ```bash
     git add .
     git commit -m "First Commit"
-    git push origin main
+    git branch -M main
+    git push -u origin main
     ```
 7. Create Dockerfile on new branch "Ex: Develop"
     ```
@@ -155,9 +156,9 @@
     image: golang:latest
 
     variables:
-        REPO_NAME: 188.166.242.145/script47/golang-apps
+        REPO_NAME: gitlab.com/[USERNAME_GITLAB]/golang-apps
         BINARY_NAME: tanuki
-        CONTAINER_IMAGE: script47/tanuki
+        CONTAINER_IMAGE: [USERNAME_DOCKERHUB]/tanuki
 
     before_script:
         - mkdir -p $GOPATH/src/$(dirname $REPO_NAME)
